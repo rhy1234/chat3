@@ -1,0 +1,88 @@
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyChj8_V2Ys_iBAWtprbVFYSUXOnIyClsYY",
+    authDomain: "chat-519ad.firebaseapp.com",
+    databaseURL: "https://chat-519ad-default-rtdb.firebaseio.com",
+    projectId: "chat-519ad",
+    storageBucket: "chat-519ad.appspot.com",
+    messagingSenderId: "882260789874",
+    appId: "1:882260789874:web:a838daba4c6d54f96090eb",
+    measurementId: "G-4Q695PV3CG"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Chat</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Group Chat</h1>
+        <div id="chat-box"></div>
+        <input type="text" id="message-input" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        function sendMessage() {
+            var messageInput = document.getElementById("message-input");
+            var message = messageInput.value;
+            if (message.trim() !== "") {
+                displaySentMessage(message);
+                messageInput.value = "";
+                notifyUser(message); // Notify user when sending a message
+            }
+        }
+
+        function displaySentMessage(message) {
+            var chatBox = document.getElementById("chat-box");
+            var messageElement = document.createElement("div");
+            messageElement.classList.add("sent-message");
+            messageElement.innerText = message;
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function displayReceivedMessage(message) {
+            var chatBox = document.getElementById("chat-box");
+            var messageElement = document.createElement("div");
+            messageElement.classList.add("received-message");
+            messageElement.innerText = message;
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function notifyUser(message) {
+            // Check if the browser supports notifications
+            if (!("Notification" in window)) {
+                alert("This browser does not support desktop notification");
+            } else if (Notification.permission === "granted") {
+                // If it's okay to send notifications, create a notification
+                var notification = new Notification("New Message", { body: message });
+            } else if (Notification.permission !== "denied") {
+                // Otherwise, ask for permission
+                Notification.requestPermission().then(function (permission) {
+                    if (permission === "granted") {
+                        var notification = new Notification("New Message", { body: message });
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
